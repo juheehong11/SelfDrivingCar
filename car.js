@@ -1,5 +1,5 @@
 class Car {
-    constructor(x, y, width, height, controlType, maxSpeed=3) {
+    constructor(x, y, width, height, controlType, maxSpeed=3, colour="#0f52ba") {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -19,6 +19,23 @@ class Car {
             this.brain = new NeuralNetwork([this.sensor.rayCount, 6, 4]);
         }
         this.controls = new Controls(controlType);
+
+        this.img = new Image();
+        this.img.src = "car.png";
+
+        this.mask = document.createElement("canvas");
+        this.mask.width = width;
+        this.mask.height = height;
+
+        this.maskContext = this.mask.getContext("2d");
+        this.img.onload=()=> {
+            this.maskContext.fillStyle = colour;
+            this.maskContext.rect(0, 0, this.width, this.height);
+            this.maskContext.fill();
+
+            this.maskContext.globalCompositeOperation="destination-atop";
+            this.maskContext.drawImage(this.img, 0, 0, this.width, this.height);
+        }
     }
 
     update(roadBorders, traffic) {
@@ -118,30 +135,38 @@ class Car {
         //this.y -= this.speed;
     }
 
-    draw(context, colour, drawSensor=false) {
-        // context.save();
-        // context.translate(this.x, this.y);
-        // context.rotate(-this.angle);
-
+    draw(context, drawSensor=false) {
+        // if (this.damaged) {
+        //     context.fillStyle="grey";
+        // } else {
+        //     context.fillStyle=colour;
+        // }
         // context.beginPath();
-        // context.rect(-this.width/2, -this.height/2, this.width, this.height);
+        // context.moveTo(this.polygon[0].x, this.polygon[0].y);
+        // for (let i=1; i<this.polygon.length; i++) {
+        //     context.lineTo(this.polygon[i].x, this.polygon[i].y);
+        // }
         // context.fill();
-
-        // context.restore();
-        if (this.damaged) {
-            context.fillStyle="grey";
-        } else {
-            context.fillStyle=colour;
-        }
-        context.beginPath();
-        context.moveTo(this.polygon[0].x, this.polygon[0].y);
-        for (let i=1; i<this.polygon.length; i++) {
-            context.lineTo(this.polygon[i].x, this.polygon[i].y);
-        }
-        context.fill();
-
-        if (this.sensor && drawSensor) {
+        if(this.sensor && drawSensor){
             this.sensor.draw(context);
         }
+
+        context.save();
+        context.translate(this.x,this.y);
+        context.rotate(-this.angle);
+        if(!this.damaged){
+            context.drawImage(this.mask,
+                -this.width/2,
+                -this.height/2,
+                this.width,
+                this.height);
+            context.globalCompositeOperation="multiply";
+        }
+        context.drawImage(this.img,
+            -this.width/2,
+            -this.height/2,
+            this.width,
+            this.height);
+        context.restore();
     }
 }

@@ -41,3 +41,8 @@ function getRGBA(value) {
     const B = value>0?0:255;
     return "rgba(" + R + ", " + G + ", " + B + ", " + alpha + ")";
 }
+
+function getRandomColour() {
+    const hue = 260 + Math.random()*290;
+    return "hsl(" + hue + ", 100%, 60%)"
+}
