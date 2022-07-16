@@ -30,12 +30,12 @@ class Car {
         if (this.sensor) {
             this.sensor.update(roadBorders, traffic);
             const offsets = this.sensor.readings.map(
-                s=>s==null?0:(1-s.offset) 
+                s=>s==null?0:1-s.offset
                 // low vals if object is far away (so 0 means nothing that sensor can detect) 
                 // and high vals if object is close
             );  // readings: x, y, offsets 
             const outputs = NeuralNetwork.feedForward(offsets, this.brain);
-            console.log(outputs);
+            //console.log(outputs);
 
             if (this.useBrain) {
                 this.controls.forward = outputs[0];
@@ -118,7 +118,7 @@ class Car {
         //this.y -= this.speed;
     }
 
-    draw(context, colour) {
+    draw(context, colour, drawSensor=false) {
         // context.save();
         // context.translate(this.x, this.y);
         // context.rotate(-this.angle);
@@ -140,7 +140,7 @@ class Car {
         }
         context.fill();
 
-        if (this.sensor) {
+        if (this.sensor && drawSensor) {
             this.sensor.draw(context);
         }
     }

@@ -10,7 +10,8 @@ class Visualiser {
         const levelHeight = height/network.levels.length;
         for (let i=network.levels.length-1; i>=0; i--) {
             const levelTop = top + lerp(height-levelHeight, 0, network.levels.length==1?0.5:i/(network.levels.length-1));
-            Visualiser.drawLevel(context, network.levels[i], left, levelTop, width, levelHeight, i==network.levels.length-1?['↑', '←', '→', '↓']:[]);
+            context.setLineDash([7,3]);
+            Visualiser.drawLevel(context, network.levels[i], left, levelTop, width, levelHeight, i==network.levels.length-1?['▲', '◄', '►', '▼']:[]);
         } 
     }
 
@@ -79,10 +80,10 @@ class Visualiser {
                 context.textBaseline = "middle";
                 context.fillStyle = "black";
                 context.strokeStyle = "white";
-                context.font(nodeRadius*0.5)+"px Arial";
-                context.fillText(outputLabels[i], x, top);
-                context.lineWidth = 0.5;
-                context.strokeText(outputLabels[i], x, top);
+                context.font=(nodeRadius*1.1)+"px Arial";
+                context.fillText(outputLabels[i],x,top+nodeRadius*0.1);
+                context.lineWidth=0.5;
+                context.strokeText(outputLabels[i],x,top+nodeRadius*0.1);
             }
         }
     }
